@@ -1,5 +1,8 @@
 const express = require('express');
 const path = require('path');
+const notes = require('./db/db.json');
+const bodyParser = require('body-parser');
+
 
 // Helper function for ID's
 const uuid = require('./helpers/uuid');
@@ -23,17 +26,16 @@ app.get('/', (req, res) =>
 
 // Setting route to notes page
 app.get('/notes', (req, res) =>
-  res.sendFile(path.join(__dirname, '/public/pages/notes.html'))
+  res.sendFile(path.join(__dirname, '/public/notes.html'))
 );
 
 // Retrieving data from db file
-app.get('/api/db', (req, res) => {
-    console.info(`${req.method} request received for db file`);
-    readFromFile('./db/db.json').then((data) => res.json(JSON.parse(data)));
-  });
+app.get('/api/notes', (req, res) => {
+  res.json(`${req.method} request recieved for notes`);
+});  
 
 // POST routes to add saved notes
-app.post('/api/db', (req, res) => {
+app.post('/api/notes', bodyParser.json(), (req, res) => {
     console.info(`${req.method} request received to add a new note`);
   
     const { title, text } = req.body;
@@ -45,18 +47,28 @@ app.post('/api/db', (req, res) => {
         note_id: uuid(),
       };
   
-      readAndAppend(newNote, './db/db.json');
+    const reviewString = JSON.stringify(newPost);
+      fs.readFile('./db/db.json', 'utf8', (error, data) => {
+        console.log(JSON.parse(data));
+      })
 
+      fs.writeFile('./db/db.json', reviewString, (err) => {
+        err
+        ? console.error(err)
+        : console.log(`Review for ${newPost.Title} has been written to JSON file`)
+      });
       const response = {
-        status: 'success',
-        body: newFeedback,
-      };
-      res.json(response);
-    } else {
-      res.error('Error in adding note');
-    }
-  });
+          status: 'success',
+          body: newPost,
+        };
 
+        console.log(req.body);
+        res.status(201).json(response);
+      }else {
+        res.status(500).json('Error posting note');
+      }
+      });  
+      
 app.listen(PORT, () =>
   console.log(`App listening at http://localhost:${PORT}`)
 );
