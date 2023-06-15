@@ -1,32 +1,31 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs')
 const notes = require('./db/db.json');
 const bodyParser = require('body-parser');
 
 
 // Helper function for ID's
 const uuid = require('./helpers/uuid');
-// Helper function for reading and writing files
-const { readFromFile, readAndAppend } = require('./helpers/fsUtils');
 
 const PORT = 3001;
 
 const app = express();
 
 //Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static('public'));
 
 // Setting home file
 app.get('/', (req, res) =>
-  res.sendFile(path.join(__dirname, '/public/index.html'))
+  res.sendFile(path.join(__dirname, './public/index.html'))
 );
 
 // Setting route to notes page
 app.get('/notes', (req, res) =>
-  res.sendFile(path.join(__dirname, '/public/notes.html'))
+  res.sendFile(path.join(__dirname, './public/notes.html'))
 );
 
 // Retrieving data from db file
@@ -47,7 +46,7 @@ app.post('/api/notes', bodyParser.json(), (req, res) => {
         note_id: uuid(),
       };
   
-    const reviewString = JSON.stringify(newPost);
+    const reviewString = JSON.stringify(newNote);
       fs.readFile('./db/db.json', 'utf8', (error, data) => {
         console.log(JSON.parse(data));
       })
@@ -55,11 +54,11 @@ app.post('/api/notes', bodyParser.json(), (req, res) => {
       fs.writeFile('./db/db.json', reviewString, (err) => {
         err
         ? console.error(err)
-        : console.log(`Review for ${newPost.Title} has been written to JSON file`)
+        : console.log(`Review for ${newNote.Title} has been written to JSON file`)
       });
       const response = {
           status: 'success',
-          body: newPost,
+          body: newNote,
         };
 
         console.log(req.body);
@@ -68,7 +67,7 @@ app.post('/api/notes', bodyParser.json(), (req, res) => {
         res.status(500).json('Error posting note');
       }
       });  
-      
+
 app.listen(PORT, () =>
   console.log(`App listening at http://localhost:${PORT}`)
 );
