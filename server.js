@@ -38,7 +38,7 @@ app.post('/api/db', (req, res) => {
   
     const { title, text } = req.body;
   
-    if (req.body) {
+    if (title && text) {
       const newNote = {
         title,
         text,
@@ -46,7 +46,12 @@ app.post('/api/db', (req, res) => {
       };
   
       readAndAppend(newNote, './db/db.json');
-      res.json(`Note added successfully!`);
+
+      const response = {
+        status: 'success',
+        body: newFeedback,
+      };
+      res.json(response);
     } else {
       res.error('Error in adding note');
     }
