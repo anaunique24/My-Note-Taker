@@ -15,6 +15,7 @@
  ## Installation
  - Node.js
  - Express.js @4.16.4
+ - Body-Parser
 
  ## Usage
  Apon opening the application, user is taken to the landing page with a button. Once that button is pressed, they are taken to the notes page where they are able to add new notes, save them, and delete them. 
