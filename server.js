@@ -2,7 +2,8 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs')
 const notes = require('./db/db.json');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
+const { readAndAppend } = require('./helpers/fsUtils');
 
 
 // Helper function for ID's
@@ -31,11 +32,11 @@ app.get('/notes', (req, res) =>
 
 // Retrieving data from db file
 app.get('/api/notes', (req, res) => {
-  res.json(`${req.method} request recieved for notes`);
+  res.json(notes);
 });  
 
 // POST routes to add saved notes
-app.post('/api/notes', bodyParser.json(), (req, res) => {
+app.post('/api/notes', (req, res) => {
     console.info(`${req.method} request received to add a new note`);
   
     const { title, text } = req.body;
@@ -46,28 +47,32 @@ app.post('/api/notes', bodyParser.json(), (req, res) => {
         text,
         note_id: uuid(),
       };
+      // readAndAppend(newNote, './db/db.json', res);
   
-    const reviewString = JSON.stringify(newNote);
+    // const reviewString = JSON.stringify(newNote);
       fs.readFile('./db/db.json', 'utf8', (error, data) => {
         console.log(JSON.parse(data));
-      })
-
-      fs.writeFile('./db/db.json', reviewString, (err) => {
+        let notes = JSON.parse(data);
+        notes.push(newNote)
+      
+      
+      fs.writeFile('./db/db.json', JSON.stringify(notes), (err) => {
         err
         ? console.error(err)
         : console.log(`Review for ${newNote.Title} has been written to JSON file`)
       });
-      const response = {
-          status: 'success',
-          body: newNote,
-        };
-
+    })
         console.log(req.body);
-        res.status(201).json(response);
+        res.status(201).json(notes);
       }else {
         res.status(500).json('Error posting note');
       }
+      // .getNotes()
+      // .then((notes) => {
+      //   return res.json(notes);
+      // })
       });  
+    
 
 app.listen(PORT, () =>
   console.log(`App listening at http://localhost:${PORT}`)
