@@ -8,9 +8,10 @@ const bodyParser = require('body-parser');
 // Helper function for ID's
 const uuid = require('./helpers/uuid');
 
+const app = express();
+
 const PORT = process.env.PORT || 3001;
 
-const app = express();
 
 //Middleware
 app.use(express.json());
