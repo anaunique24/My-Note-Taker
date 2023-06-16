@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 // Helper function for ID's
 const uuid = require('./helpers/uuid');
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 const app = express();
 
