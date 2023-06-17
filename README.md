@@ -32,6 +32,7 @@
  
  ## Live
 https://infinite-river-94324-78da5704b0ff.herokuapp.com/
+![Screenshot 2023-06-16 at 5 47 10 PM](https://github.com/anaunique24/My-Note-Taker/assets/128003940/37db1ba5-4c70-467c-b9b6-8b55e4f1dac1)
 
  ## Questions
  Any Questions can be answered at anaunique@icloud.com
